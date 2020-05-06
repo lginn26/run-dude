@@ -14,11 +14,6 @@ PAUSE = 4
 done = False
 stage = START
 
-# Functions
-def setup():
-    pass
-
-
 # Window
 WIDTH = 1920
 HEIGHT = 1080
@@ -42,6 +37,9 @@ GREEN = (100, 255, 100)
 
 # Fonts
 
+# Functions
+def setup():
+    pass
 
 # Game loop
 setup()
@@ -70,7 +68,11 @@ while not done:
                     setup()
                     pygame.mixer.music.rewind()
 
-    # Update screen (Actually draw the picture in the window.)
+    # Game Logic (Preforms ingame actions and controls the program.)
+
+    # Drawing Logic (Draws the graphics and sprites on screen)
+
+    # Update screen (Draw the picture in the window.)
     pygame.display.flip()
 
     # Limit refresh rate of game loop
