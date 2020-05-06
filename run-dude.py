@@ -1,4 +1,5 @@
 import pygame
+from game_objects import Player
 
 # Initialize game engine
 pygame.init()
@@ -33,13 +34,24 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 YELLOW = (255, 255, 0)
 GREEN = (100, 255, 100)
+SKYBLUE = (0, 238, 255)
 
 
 # Fonts
 
 # Functions
 def setup():
-    pass
+    """
+    Creates all game objects
+    """
+
+    global player, dude
+
+    # Create a player object
+    dude = Player(960, 850)
+
+    player = pygame.sprite.GroupSingle()
+    player.add(dude)
 
 # Game loop
 setup()
@@ -69,8 +81,11 @@ while not done:
                     pygame.mixer.music.rewind()
 
     # Game Logic (Preforms ingame actions and controls the program.)
+    player.update(pygame.key.get_pressed())
 
     # Drawing Logic (Draws the graphics and sprites on screen)
+    pygame.Surface.fill(screen, SKYBLUE)
+    player.draw(screen)
 
     # Update screen (Draw the picture in the window.)
     pygame.display.flip()
