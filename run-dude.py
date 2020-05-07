@@ -1,5 +1,5 @@
 import pygame
-from game_objects import Player
+from game_objects import Player, Astetic_Object
 
 # Initialize game engine
 pygame.init()
@@ -45,13 +45,31 @@ def setup():
     Creates all game objects
     """
 
-    global player, dude
+    global decoration, player, dude
 
     # Create a player object
-    dude = Player(960, 850)
+    dude = Player(960, 865)
 
     player = pygame.sprite.GroupSingle()
     player.add(dude)
+
+    # Create decoration
+    decoration = pygame.sprite.Group()
+
+    decorations = [
+        Astetic_Object(0, 965, 10, pygame.image.load('assets/sprites/ground.png')),
+        Astetic_Object(1920, 965, 10, pygame.image.load('assets/sprites/ground.png')),
+        Astetic_Object(3840, 965, 10, pygame.image.load('assets/sprites/ground.png')),
+        Astetic_Object(0, 100, 10, pygame.image.load('assets/sprites/cloud.png')),
+        Astetic_Object(300, 300, 10, pygame.image.load('assets/sprites/cloud.png')),
+        Astetic_Object(600, 200, 10, pygame.image.load('assets/sprites/cloud.png')),
+        Astetic_Object(900, 100, 10, pygame.image.load('assets/sprites/cloud.png')),
+        Astetic_Object(1200, 300, 10, pygame.image.load('assets/sprites/cloud.png')),
+        Astetic_Object(1500, 200, 10, pygame.image.load('assets/sprites/cloud.png')),
+
+    ]
+    for item in decorations:
+        decoration.add(item)
 
 # Game loop
 setup()
@@ -82,10 +100,12 @@ while not done:
 
     # Game Logic (Preforms ingame actions and controls the program.)
     player.update(pygame.key.get_pressed())
+    decoration.update(SIZE)
 
     # Drawing Logic (Draws the graphics and sprites on screen)
     pygame.Surface.fill(screen, SKYBLUE)
     player.draw(screen)
+    decoration.draw(screen)
 
     # Update screen (Draw the picture in the window.)
     pygame.display.flip()

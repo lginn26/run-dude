@@ -6,8 +6,8 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
 
         # graphical variables
-        self.max_frame_dur = 4
-        self.cur_frame_dur = 4
+        self.max_frame_dur = 6
+        self.cur_frame_dur = 6
         self.cur_frame = 0
 
         self.walk_cycle = [
@@ -61,4 +61,20 @@ class Player(pygame.sprite.Sprite):
         self.controls(us_input)
         self.change_sprite()
 
+class Astetic_Object(pygame.sprite.Sprite):
 
+    def __init__(self, x, y, speed, image):
+        super().__init__()
+
+        self.image = image
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+        self.speed = speed
+
+    def update(self, screen_size):
+        self.rect.x -= self.speed
+
+        if self.rect.right < screen_size[0]-screen_size[0]:
+            self.rect.x = screen_size[0]
