@@ -1,5 +1,5 @@
-import pygame
-from game_objects import Player, Astetic_Object
+import pygame, random
+from game_objects import Player, Astetic_Object, Obstacle
 
 # Initialize game engine
 pygame.init()
@@ -14,6 +14,10 @@ PAUSE = 4
 # Variables
 done = False
 stage = START
+
+max_next_obst = 100
+min_next_obst = 5
+next_obst = 20
 
 # Window
 WIDTH = 1920
@@ -40,12 +44,20 @@ SKYBLUE = (0, 238, 255)
 # Fonts
 
 # Functions
+def generate_obstacles(set, next_obst):
+    next_obst -= 1
+
+    if next_obst <= 0:
+        set.add(Obstacle(1990, 10, random.choice(["short", "medium", "tall", "extall"])))
+        print("NEW OBST")
+        next_obst += random.randint(min_next_obst, max_next_obst)
+
 def setup():
     """
     Creates all game objects
     """
 
-    global decoration, player, dude
+    global obstacle, decoration, player, dude
 
     # Create a player object
     dude = Player(960, 865)
@@ -70,6 +82,9 @@ def setup():
     ]
     for item in decorations:
         decoration.add(item)
+
+    # Create obstacle
+    obstacle = pygame.sprite.Group()
 
 # Game loop
 setup()
@@ -101,11 +116,20 @@ while not done:
     # Game Logic (Preforms ingame actions and controls the program.)
     player.update(pygame.key.get_pressed(), SIZE)
     decoration.update(SIZE)
+    obstacle.update(SIZE)
+
+    next_obst -= 1
+
+    if next_obst <= 0:
+        obstacle.add(Obstacle(1990, 10, random.choice(["short", "medium", "tall", "extall"])))
+        print("NEW OBST")
+        next_obst += random.randint(min_next_obst, max_next_obst)
 
     # Drawing Logic (Draws the graphics and sprites on screen)
     pygame.Surface.fill(screen, SKYBLUE)
     player.draw(screen)
     decoration.draw(screen)
+    obstacle.draw(screen)
 
     # Update screen (Draw the picture in the window.)
     pygame.display.flip()

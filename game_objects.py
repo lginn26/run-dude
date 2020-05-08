@@ -102,7 +102,6 @@ class Player(pygame.sprite.Sprite):
         self.do_jump_dur_reset()
         self.do_bounds_control(screen)
         self.change_sprite()
-        print(self.vector_y)
 
 class Astetic_Object(pygame.sprite.Sprite):
 
@@ -121,3 +120,31 @@ class Astetic_Object(pygame.sprite.Sprite):
 
         if self.rect.right < screen_size[0]-screen_size[0]:
             self.rect.x = screen_size[0]
+
+class Obstacle(pygame.sprite.Sprite):
+
+    def __init__(self, x, speed, type):
+        super().__init__()
+
+        if type == "short":
+            self.image = pygame.image.load('assets/sprites/wood_obstacle_short.png')
+        elif type == "medium":
+            self.image = pygame.image.load('assets/sprites/wood_obstacle_medium.png')
+        elif type == "tall":
+            self.image = pygame.image.load('assets/sprites/wood_obstacle_tall.png')
+        elif type == "extall":
+            self.image = pygame.image.load('assets/sprites/wood_obstacle_extall.png')
+        else:
+            self.image = pygame.image.load('assets/sprites/wood_obstacle_short.png')
+
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = GROUND - self.rect[3]
+
+        self.speed = speed
+
+    def update(self,  screen_size):
+        self.rect.x -= self.speed
+
+        if self.rect.right < screen_size[0] - screen_size[0]:
+            self.kill()
