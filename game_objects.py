@@ -1,4 +1,8 @@
-import pygame
+import pygame, math
+
+GROUND = 965
+JUMPDUR = 10
+GRAVITY = 1
 
 class Player(pygame.sprite.Sprite):
 
@@ -25,13 +29,41 @@ class Player(pygame.sprite.Sprite):
 
         # logic variables
         self.speed = 10
+        self.jump_force = 7
+
         self.jump_dur = 10
+
+        self.max_gravity = 17
+        self.vector_y = 0
+
+    def do_jump_dur_reset(self):
+        if self.rect.bottom >= GROUND:
+            self.jump_dur = JUMPDUR
+
+    def do_gravity(self):
+        if self.vector_y >= self.max_gravity:
+            self.vector_y = self.max_gravity
+        elif self.vector_y <= -self.max_gravity:
+            self.vector_y = -self.max_gravity
+
+        self.rect.y -= self.vector_y
+
+        if self.rect.bottom < GROUND:
+            self.vector_y -= GRAVITY
+
+    def do_bounds_control(self, screen):
+        if self.rect.left < screen[0]-screen[0]:
+            self.rect.x += self.speed
+        elif self.rect.right > screen[0]:
+            self.rect.x -= self.speed
+
+        if self.rect.bottom > GROUND:
+            self.rect.bottom -= (self.rect.bottom - GROUND)
 
     def change_sprite(self):
         if self.cur_frame_dur > 0:
             self.cur_frame_dur -= 1
         else:
-            print("frame shift")
             self.cur_frame += 1
             self.cur_frame_dur = self.max_frame_dur
 
@@ -53,13 +85,24 @@ class Player(pygame.sprite.Sprite):
         elif control[pygame.K_RIGHT]:
             self.rect.x += self.speed
 
-    def update(self, us_input):
+        if (control[pygame.K_UP] or control[pygame.K_SPACE]) and self.jump_dur > 0:
+            self.vector_y += self.jump_force
+            self.jump_dur -= GRAVITY
+
+        if not control[pygame.K_UP]:
+            self.jump_dur = 0
+
+    def update(self, us_input, screen):
         """
         Makes instances preform intended actions
         :param us_input: Short for user input, intakes the player's keyboard presses
         """
         self.controls(us_input)
+        self.do_gravity()
+        self.do_jump_dur_reset()
+        self.do_bounds_control(screen)
         self.change_sprite()
+        print(self.vector_y)
 
 class Astetic_Object(pygame.sprite.Sprite):
 

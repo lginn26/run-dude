@@ -99,7 +99,7 @@ while not done:
                     pygame.mixer.music.rewind()
 
     # Game Logic (Preforms ingame actions and controls the program.)
-    player.update(pygame.key.get_pressed())
+    player.update(pygame.key.get_pressed(), SIZE)
     decoration.update(SIZE)
 
     # Drawing Logic (Draws the graphics and sprites on screen)
