@@ -40,10 +40,30 @@ YELLOW = (255, 255, 0)
 GREEN = (100, 255, 100)
 SKYBLUE = (0, 238, 255)
 
-
 # Fonts
+font_title = pygame.font.Font("assets/fonts/AbrilFatface-Regular.ttf", 100)
+font_sub_title = pygame.font.Font("assets/fonts/AbrilFatface-Regular.ttf", 50)
 
-# Functions
+# Graphic Functions
+
+def show_title_card(big_text, little_text):
+    """
+    Displays a title card using given text
+    :param big_text: Text that appears on the top row
+    :param little_text: Smaller text that appears on the bottom row
+    """
+
+    title_text = font_title.render(big_text, 1, BLACK)
+    w = title_text.get_width()
+
+    lower_text = font_sub_title.render(little_text, 1, BLACK)
+    w2 = lower_text.get_width()
+
+    screen.blit(title_text, [(SIZE[0]/2 - w/2), 400])
+    screen.blit(lower_text, [(SIZE[0]/2 - w2/2), 500])
+
+# Logic Functions
+
 def generate_obstacles(set, next_obst):
     next_obst -= 1
 
@@ -56,8 +76,10 @@ def setup():
     """
     Creates all game objects
     """
-
     global obstacle, decoration, player, dude
+
+    # Sets initial game state
+    stage == START
 
     # Create a player object
     dude = Player(960, 865)
@@ -110,26 +132,40 @@ while not done:
                     pygame.mixer.music.unpause()
             elif stage == END or stage == DEAD:
                 if event.key == pygame.K_r:
+                    stage = START
                     setup()
                     pygame.mixer.music.rewind()
 
     # Game Logic (Preforms ingame actions and controls the program.)
-    player.update(pygame.key.get_pressed(), SIZE)
-    decoration.update(SIZE)
-    obstacle.update(SIZE)
 
-    next_obst -= 1
+    if stage == PLAYING:
+        player.update(pygame.key.get_pressed(), obstacle, SIZE)
 
-    if next_obst <= 0:
-        obstacle.add(Obstacle(1990, 10, random.choice(["short", "medium", "tall", "extall"])))
-        print("NEW OBST")
-        next_obst += random.randint(min_next_obst, max_next_obst)
+        if dude.check_obst_collide(obstacle):
+            stage = DEAD
+
+        decoration.update(SIZE)
+        obstacle.update(SIZE)
+
+        # Generates obstacles at varying heights at varying distances
+        next_obst -= 1
+
+        if next_obst <= 0:
+            obstacle.add(Obstacle(1990, 10, random.choice(["short", "medium", "tall", "extall"])))
+            next_obst += random.randint(min_next_obst, max_next_obst)
 
     # Drawing Logic (Draws the graphics and sprites on screen)
     pygame.Surface.fill(screen, SKYBLUE)
     player.draw(screen)
     decoration.draw(screen)
     obstacle.draw(screen)
+
+    if stage == START:
+        show_title_card("--Run Dude--", "--Press SPACE to start--")
+    elif stage == PAUSE:
+        show_title_card("--PAUSED--", "--Press P to resume--")
+    elif stage == DEAD:
+        show_title_card("--You Crashed--", "--Press r to restart--")
 
     # Update screen (Draw the picture in the window.)
     pygame.display.flip()

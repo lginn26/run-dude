@@ -3,6 +3,7 @@ import pygame, math
 GROUND = 965
 JUMPDUR = 10
 GRAVITY = 1
+DEAD = 3
 
 class Player(pygame.sprite.Sprite):
 
@@ -35,6 +36,17 @@ class Player(pygame.sprite.Sprite):
 
         self.max_gravity = 17
         self.vector_y = 0
+
+    def check_obst_collide(self, obsts):
+        """
+        Checks if Player instance has collided with a obstacle instance
+        :param obsts: A list of Obstacle instances
+        :return: A boolian value: Player instance has collided with a obstacle instance?
+        """
+
+        hit_list = pygame.sprite.spritecollide(self, obsts, False, pygame.sprite.collide_mask)
+
+        return len(hit_list) > 0
 
     def do_jump_dur_reset(self):
         if self.rect.bottom >= GROUND:
@@ -92,7 +104,7 @@ class Player(pygame.sprite.Sprite):
         if not control[pygame.K_UP]:
             self.jump_dur = 0
 
-    def update(self, us_input, screen):
+    def update(self, us_input, obsts, screen):
         """
         Makes instances preform intended actions
         :param us_input: Short for user input, intakes the player's keyboard presses
