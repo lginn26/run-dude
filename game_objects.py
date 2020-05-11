@@ -37,14 +37,14 @@ class Player(pygame.sprite.Sprite):
         self.max_gravity = 17
         self.vector_y = 0
 
-    def check_obst_collide(self, obsts):
+    def check_obst_collide(self, obsts, dokill):
         """
         Checks if Player instance has collided with a obstacle instance
         :param obsts: A list of Obstacle instances
         :return: A boolian value: Player instance has collided with a obstacle instance?
         """
 
-        hit_list = pygame.sprite.spritecollide(self, obsts, False, pygame.sprite.collide_mask)
+        hit_list = pygame.sprite.spritecollide(self, obsts, dokill, pygame.sprite.collide_mask)
 
         return len(hit_list) > 0
 
@@ -160,3 +160,21 @@ class Obstacle(pygame.sprite.Sprite):
 
         if self.rect.right < screen_size[0] - screen_size[0]:
             self.kill()
+
+class Coin(pygame.sprite.Sprite):
+
+    def __init__(self, x, y, speed):
+        super().__init__()
+
+        self.image = pygame.image.load('assets/sprites/coin.png')
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+        self.speed = speed
+
+    def update(self, screen_size):
+        self.rect.x -= self.speed
+
+        if self.rect.right < screen_size[0]-screen_size[0]:
+            self.rect.x = screen_size[0]
